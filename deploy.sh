@@ -8,4 +8,3 @@ kubectl apply -f user-deployment.yml
 kubectl apply -f  user-service.yml
 kubectl get deployments
 kubectl get svc
-

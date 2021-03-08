@@ -11,6 +11,6 @@ spec:
       targetPort: 8080
       nodePort: 30000
       protocol: TCP
-      name: app
+      name: user-service-appport
   selector:
-    app: dockerpoc
+    app: user-service-app
