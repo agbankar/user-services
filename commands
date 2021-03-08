@@ -1,4 +1,4 @@
-" cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
 baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
@@ -6,12 +6,10 @@ enabled=1
 gpgcheck=1
 repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-EOF"
+EOF
 
 yum install -y kubeadm docker
 sudo systemctl start docker
-kubeadm init --pod-network-cidr=172.30.0.0/16
-
 
 1. Install packages on master and minions
 yum install kubeadm docker -y
@@ -25,10 +23,12 @@ for i in kubelet docker; do systemctl start $i; systemctl enable $i;systemctl st
 4. Ensure swap is off and comment in vi /etc/fstab AND COMMENT
 swapoff -a
 
-5. Enable IP forwarding or iptables. Update below lines in /etc/sysctl.conf
+5. Enable IP forwarding or iptables. Update below lines in  vi /etc/sysctl.conf
 
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
+
+modprobe br_netfilter
 
 6. To take effect the new kernel paramater settings:
 sysctl -p
@@ -36,7 +36,8 @@ sysctl -p
 7. Set IP range for pods or docker container:
 kubeadm init --pod-network-cidr=10.244.0.0/16
 
-8. mkdir -p $HOME/.kube
+8.
+mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
@@ -83,3 +84,21 @@ setenforce 0
 yum install -y docker kubelet kubeadm kubectl kubernetes-cni
 systemctl enable docker && systemctl start docker
 systemctl enable kubelet && systemctl start kubelet
+cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=http://yum.kubernetes.io/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg
+   https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOF
+setenforce 0
+yum install -y docker kubelet kubeadm kubectl kubernetes-cni
+systemctl enable docker && systemctl start docker
+systemctl enable kubelet && systemctl start kubelet
+
+modprobe br_netfilter
+kubeadm token create --print-join-command
+kubectl taint nodes --all node-role.kubernetes.io/master-
