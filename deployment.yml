@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docker-deployment
+spec:
+  selector:
+    matchLabels:
+      app: dockerpoc
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: dockerpoc
+    spec:
+      containers:
+        - name: dockerpoc
+          image: dockerpoc:2.0
+          ports:
+            - containerPort: 8080

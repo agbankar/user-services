@@ -1,0 +1,85 @@
+" cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOF"
+
+yum install -y kubeadm docker
+sudo systemctl start docker
+kubeadm init --pod-network-cidr=172.30.0.0/16
+
+
+1. Install packages on master and minions
+yum install kubeadm docker -y
+
+2. Stop firewall/selinux
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+
+3. Start docker and kubelet service
+for i in kubelet docker; do systemctl start $i; systemctl enable $i;systemctl status $i; done
+
+4. Ensure swap is off and comment in vi /etc/fstab AND COMMENT
+swapoff -a
+
+5. Enable IP forwarding or iptables. Update below lines in /etc/sysctl.conf
+
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+
+6. To take effect the new kernel paramater settings:
+sysctl -p
+
+7. Set IP range for pods or docker container:
+kubeadm init --pod-network-cidr=10.244.0.0/16
+
+8. mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+9. Configure flannel networking for your docker containner.
+kubectl apply -f https://raw.githubusercontent.com/cor...
+
+
+"kubeadm join 10.50.11.166:6443 --token b0rh75.1flh1hrcmt2f0br2 \
+--discovery-token-ca-cert-hash sha256:838f78f8470fd819845f383a711b134737381035b65965cfd963b30a1b9bc158"
+
+
+
+docker rm $(docker stop test)
+
+kubectl get deployments
+
+
+docker rm $(docker stop tomcat)
+
+docker exec -it tomcat /bin/bash
+
+docker run -d --name tomcat tomcat:1.0
+
+kubectl exec --stdin --tty  provisioning-d-646494bb9f-s5dbf -- /bin/bash
+
+kubectl logs --namespace=kube-system -l k8s-app=kube-dns
+
+
+
+kubectl taint nodes ${kubectl get nodes}
+
+
+cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=http://yum.kubernetes.io/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg
+   https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOF
+setenforce 0
+yum install -y docker kubelet kubeadm kubectl kubernetes-cni
+systemctl enable docker && systemctl start docker
+systemctl enable kubelet && systemctl start kubelet
