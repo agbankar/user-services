@@ -7,6 +7,6 @@ docker push shahpriti919/user-service
 kubectl delete deployment user-service-deployment
 kubectl delete svc user-service-svc
 kubectl apply -f ./user-service/user-deployment.yml
-kubectl apply -f  ./user-serviceuser-service.yml
+kubectl apply -f  ./user-service/user-service.yml
 kubectl get deployments
 kubectl get svc
