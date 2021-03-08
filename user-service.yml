@@ -8,7 +8,7 @@ spec:
   type: NodePort
   ports:
     - port: 8080
-      targetPort: 8080
+      targetPort: 32672
       nodePort: 32672
       protocol: TCP
       name: user-service-appport
