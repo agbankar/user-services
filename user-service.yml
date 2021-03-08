@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-svc
+  name: user-service-svc
   labels:
-    app: dockerpoc
+    app: user-service-app
 spec:
   type: NodePort
   ports:
