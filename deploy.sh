@@ -5,7 +5,7 @@ cd user-service && mvn clean install
 docker build -t shahpriti919/user-service ./user-service
 docker login -u shahpriti919 -p $urekha12
 docker push shahpriti919/user-service
-kubectl delete deployment user-service-deployment
+kubectl delete deployment user-deployment
 kubectl delete svc user-service-svc
 kubectl apply -f ./user-service/user-deployment.yml
 kubectl apply -f  ./user-service/user-service.yml
