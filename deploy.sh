@@ -1,6 +1,7 @@
 #!/bin/bash
 rm -rf user-service
 git clone https://github.com/agbankar/user-service.git
+cd user-service && mvn clean install
 docker build -t shahpriti919/user-service ./user-service
 docker login -u shahpriti919 -p $urekha12
 docker push shahpriti919/user-service
