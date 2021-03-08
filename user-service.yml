@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: user-service-svc
   labels:
-    app: user-service-app
+    app: user-app
 spec:
   type: NodePort
   ports:
@@ -13,4 +13,4 @@ spec:
       protocol: TCP
       name: user-service-appport
   selector:
-    app: user-service-app
+    app: user-app
